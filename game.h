@@ -9,7 +9,7 @@ public:
     Game(QString hostPlayer, QTcpSocket* hostSocket);
     void addPlayer(QString joinPlayer, QTcpSocket* joinSocket);
     QString getHostPlayer() const;
-    QTcpSocket *getRecieverSocket(QHostAddress senderAddr);
+    QTcpSocket *getRecieverSocket(QTcpSocket *senderSocket);
 private:
    // bool hostTurn = true;
     QString hostPlayer;

@@ -15,8 +15,9 @@ QString Game::getHostPlayer() const
     return hostPlayer;
 }
 
-QTcpSocket *Game::getRecieverSocket(QHostAddress senderAddr){
-    if(senderAddr == hostSocket->peerAddress()){
+QTcpSocket *Game::getRecieverSocket(QTcpSocket *senderSocket){
+    if(senderSocket->peerAddress() == hostSocket->peerAddress()
+            && senderSocket->peerPort() == hostSocket->peerPort()){
         return joinSocket;
     } else {
         return hostSocket;

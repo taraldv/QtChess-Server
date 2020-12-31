@@ -21,12 +21,12 @@ void TcpServerHandler::acceptTcpConnection(){
 void TcpServerHandler::readTcpPacket(){
 
     QTcpSocket* readSocket = qobject_cast<QTcpSocket*>(sender());
-    QHostAddress senderAddress = readSocket->peerAddress();
-    int port = readSocket->peerPort();
+    /*QHostAddress senderAddress = readSocket->peerAddress();
+    int port = readSocket->peerPort();*/
 
     QByteArray data = readSocket->readAll();
 
-    qDebug() << "Addr: " << senderAddress << " Port: " << port << " Data: " << data;
+    //qDebug() << "Addr: " << senderAddress << " Port: " << port << " Data: " << data;
     QByteArray tempArr = data;
     int messageCode = tempArr[0];
     tempArr.remove(0, 1);
@@ -116,7 +116,7 @@ void TcpServerHandler::readTcpPacket(){
             output.append(toMoveArray.length());
             output.append(toMoveArray);
 
-            games[gameIndex].getRecieverSocket(senderAddress)->write(output);
+            games[gameIndex].getRecieverSocket(readSocket)->write(output);
         } else {
             qDebug() << "Move failed, Game with host: " << hostName << " does not exist";
             QByteArray output;
