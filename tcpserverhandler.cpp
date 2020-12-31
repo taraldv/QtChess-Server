@@ -39,16 +39,23 @@ void TcpServerHandler::readTcpPacket(){
         QByteArray hostNameArray = QByteArray(tempArr, hostNameLength);
         QString hostName(hostNameArray);
         tempArr.remove(0, hostNameLength);
-        qDebug() << hostName;
+        qDebug() << "starting game with hostName: " << hostName;
         //Check if name exists
         if(findGameWithHost(hostName)<0){
 
             //Create new game and append to list
             Game newGame(hostName,readSocket);
             games.append(newGame);
-            readSocket->write("1");
+            QByteArray output;
+            int msg = 1;
+            output.append(msg);
+            readSocket->write(output);
         } else {
-            readSocket->write("0");
+            qDebug() << "Hosting failed, host already exists";
+            QByteArray output;
+            int msg = 0;
+            output.append(msg);
+            readSocket->write(output);
         }
     } else if(messageCode == 1){
         //Join game: code playerName hostName
@@ -64,18 +71,59 @@ void TcpServerHandler::readTcpPacket(){
         QString hostName(hostNameArray);
         tempArr.remove(0, hostNameLength);
 
-        qDebug() << "player: " << playerName << " host: " << hostName;
+        qDebug() << "player: " << playerName << " attempting to join host: " << hostName;
 
         int gameIndex = findGameWithHost(hostName);
         if(gameIndex >= 0){
             games[gameIndex].addPlayer(playerName,readSocket);
-            readSocket->write("1");
+            QByteArray output;
+            output.append(1);
+            readSocket->write(output);
         } else {
-            qDebug() << "Could not find game with host: " << hostName << " " << Q_FUNC_INFO;
-            readSocket->write("0");
+            qDebug() << "Could not find game with host: " << hostName;
+            QByteArray output;
+            int msg = 0;
+            output.append(msg);
+            readSocket->write(output);
         }
     } else if(messageCode == 2){
         //Move
+        int hostNameLength = tempArr[0];
+        tempArr.remove(0, 1);
+        QByteArray hostNameArray = QByteArray(tempArr, hostNameLength);
+        QString hostName(hostNameArray);
+        tempArr.remove(0, hostNameLength);
+        int gameIndex = findGameWithHost(hostName);
+        qDebug() << "Game with host: " << hostName << " attempting to move";
+        if(gameIndex >= 0){
+            int fromMoveLength = tempArr[0];
+            tempArr.remove(0, 1);
+            QByteArray fromMoveArray = QByteArray(tempArr, fromMoveLength);
+            //QString fromMove(fromMoveArray);
+            tempArr.remove(0, fromMoveLength);
+
+            int toMoveLength = tempArr[0];
+            tempArr.remove(0, 1);
+            QByteArray toMoveArray = QByteArray(tempArr, toMoveLength);
+            //QString toMove(toMoveArray);
+            tempArr.remove(0, toMoveLength);
+
+            QByteArray output;
+            //2 is the code for the clients to read a move
+            output.append(2);
+            output.append(fromMoveArray.length());
+            output.append(fromMoveArray);
+            output.append(toMoveArray.length());
+            output.append(toMoveArray);
+
+            games[gameIndex].getRecieverSocket(senderAddress)->write(output);
+        } else {
+            qDebug() << "Move failed, Game with host: " << hostName << " does not exist";
+            QByteArray output;
+            int msg = 0;
+            output.append(msg);
+            readSocket->write(output);
+        }
     } else if(messageCode == 3){
         //Quit
     }

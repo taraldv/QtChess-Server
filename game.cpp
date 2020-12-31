@@ -14,3 +14,11 @@ QString Game::getHostPlayer() const
 {
     return hostPlayer;
 }
+
+QTcpSocket *Game::getRecieverSocket(QHostAddress senderAddr){
+    if(senderAddr == hostSocket->peerAddress()){
+        return joinSocket;
+    } else {
+        return hostSocket;
+    }
+}

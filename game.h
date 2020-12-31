@@ -2,14 +2,14 @@
 #define GAME_H
 #include <QString>
 #include <QTcpSocket>
+#include <QHostAddress>
 
-class Game
-{
+class Game{
 public:
     Game(QString hostPlayer, QTcpSocket* hostSocket);
     void addPlayer(QString joinPlayer, QTcpSocket* joinSocket);
     QString getHostPlayer() const;
-
+    QTcpSocket *getRecieverSocket(QHostAddress senderAddr);
 private:
    // bool hostTurn = true;
     QString hostPlayer;
