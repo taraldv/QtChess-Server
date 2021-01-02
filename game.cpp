@@ -1,7 +1,7 @@
 #include "game.h"
 
-Game::Game(QString hostPlayer,QTcpSocket* hostSocket)
-    :hostPlayer(hostPlayer),hostSocket(hostSocket){
+Game::Game(QString gameId, QString hostPlayer,QTcpSocket* hostSocket)
+    :gameId(gameId), hostPlayer(hostPlayer),hostSocket(hostSocket){
 
 }
 
@@ -22,4 +22,14 @@ QTcpSocket *Game::getRecieverSocket(QTcpSocket *senderSocket){
     } else {
         return hostSocket;
     }
+}
+
+QString Game::getJoinPlayer() const
+{
+    return joinPlayer;
+}
+
+QString Game::getGameId() const
+{
+    return gameId;
 }

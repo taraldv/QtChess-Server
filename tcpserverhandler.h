@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QtConcurrent/QtConcurrent>
 #include <QObject>
+#include <QUuid>
 #include "game.h"
 
 class TcpServerHandler: public QObject{
@@ -16,7 +17,9 @@ public:
 private:
     QTcpServer* mTcpServer;
     QList<Game> games;
-    int findGameWithHost(QString host);
+    bool doesGameExist(QString gameId);
+    int getGameIndex(QString gameId);
+    QString getNextStringSegement(QByteArray *data);
 };
 
 #endif // TCPSERVERHANDLER_H
