@@ -29,6 +29,26 @@ QString Game::getJoinPlayer() const
     return joinPlayer;
 }
 
+bool Game::socketExists(QTcpSocket *socket){
+    QHostAddress socketAddr = socket->peerAddress();
+    int socketPort = socket->peerPort();
+
+    bool matchesHost = false;
+    bool matchesJoin = false;
+
+    if(hostSocket){
+        QHostAddress hostAddr = hostSocket->peerAddress();
+        int hostPort = hostSocket->peerPort();
+        matchesHost = (hostAddr == socketAddr && hostPort == socketPort);
+    }
+    if(joinSocket){
+        QHostAddress joinAddr = joinSocket->peerAddress();
+        int joinPort = joinSocket->peerPort();
+        matchesJoin = (joinAddr == socketAddr && joinPort == socketPort);
+    }
+    return matchesJoin || matchesHost;
+}
+
 QString Game::getGameId() const
 {
     return gameId;

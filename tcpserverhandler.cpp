@@ -14,7 +14,7 @@ void TcpServerHandler::acceptTcpConnection(){
     }
 
     connect(socket, &QIODevice::readyRead, this, &TcpServerHandler::readTcpPacket);
-    //connect(tcpServerConnection, &QAbstractSocket::errorOccurred, this, &SocketHandler::displayError);
+    connect(socket, &QAbstractSocket::disconnected, this, &TcpServerHandler::lostConnection);
 }
 
 
@@ -116,6 +116,19 @@ void TcpServerHandler::readTcpPacket(){
         //Quit?
     }
     //readSocket->write(data);*/
+}
+
+void TcpServerHandler::lostConnection(){
+    QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
+    if(socket){
+        for(int i=0;i<games.size();i++){
+            if(games[i].socketExists(socket)){
+                games.removeAt(i);
+                return;
+            }
+        }
+        delete socket;
+    }
 }
 
 bool TcpServerHandler::doesGameExist(QString gameId){

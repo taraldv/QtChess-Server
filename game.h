@@ -11,7 +11,7 @@ public:
     QString getHostPlayer() const;
     QTcpSocket *getRecieverSocket(QTcpSocket *senderSocket);
     QString getJoinPlayer() const;
-
+    bool socketExists(QTcpSocket* socket);
     QString getGameId() const;
 
 private:
@@ -19,8 +19,8 @@ private:
     QString gameId;
     QString hostPlayer;
     QString joinPlayer;
-    QTcpSocket *hostSocket;
-    QTcpSocket *joinSocket;
+    QTcpSocket *hostSocket = nullptr;
+    QTcpSocket *joinSocket = nullptr;
 };
 
 #endif // GAME_H

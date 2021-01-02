@@ -15,6 +15,7 @@ public:
     void acceptTcpConnection();
     void readTcpPacket();
 private:
+    void lostConnection();
     QTcpServer* mTcpServer;
     QList<Game> games;
     bool doesGameExist(QString gameId);
